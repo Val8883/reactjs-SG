@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      latitude: null,
+      longitude: null,
+      error: '',
+    };
+    this.getGeolocation();
+  }
+
+  getGeolocation() {
+    window.navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude, longitude } }) =>
+        this.setState({
+          latitude,
+          longitude,
+        }),
+      ({ message }) => this.setState({ error: message })
+    );
+  }
+
+  render() {
+    const { latitude, longitude, error } = this.state;
+    return (
+      <div>
+        {error ? (
+          <p style={{ color: 'palevioletred' }}>Error: {error}</p>
+        ) : (
+          <div>
+            {latitude && longitude ? (
+              <>
+                <p>Latitude: {latitude}</p>
+                <p>Longtitude: {longitude}</p>
+              </>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;
